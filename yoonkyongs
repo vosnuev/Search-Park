@@ -1,0 +1,29 @@
+sql
+
+-- 1. 주차장 기본 정보 테이블
+CREATE TABLE parking_lot (
+    parking_id INT AUTO_INCREMENT PRIMARY KEY,
+    parking_name VARCHAR(100) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    region VARCHAR(50),
+    total_space INT,
+    price_per_hour INT,
+    latitude DECIMAL(10, 8),
+    longitude DECIMAL(11, 8)
+);
+
+-- 2. 주차 유형 마스터 테이블 (여성전용, 전기차 등)
+CREATE TABLE parking_type (
+    type_id INT AUTO_INCREMENT PRIMARY KEY,
+    type_name VARCHAR(50) NOT NULL
+);
+
+-- 3. 주차 구역 상세 테이블 (주차장과 유형의 매핑)
+CREATE TABLE parking_space (
+    space_id INT AUTO_INCREMENT PRIMARY KEY,
+    parking_id INT,
+    type_id INT,
+    status ENUM('Available', 'Occupied') DEFAULT 'Available',
+    FOREIGN KEY (parking_id) REFERENCES parking_lot(parking_id) ON DELETE CASCADE,
+    FOREIGN KEY (type_id) REFERENCES parking_type(type_id) ON DELETE CASCADE
+);
