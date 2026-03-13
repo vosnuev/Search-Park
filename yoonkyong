@@ -21,6 +21,7 @@ region = st.selectbox(
     ["서울", "부산", "대구"]
 )
 
+
 # 주차 유형 체크박스
 st.subheader("주차 유형 선택")
 
