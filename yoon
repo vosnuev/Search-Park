@@ -11,7 +11,7 @@ conn = pymysql.connect(
     charset="utf8"
 )
 
-st.title("🚗 주차장 검색 시스템")
+st.title("주차장 검색 시스템")
 
 st.write("지역과 주차 유형을 선택하여 주차장을 검색하세요.")
 
