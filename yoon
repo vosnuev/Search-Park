@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import pymysql
 
-# MySQL 연결
+# DB 연결
 conn = pymysql.connect(
     host="localhost",
     user="root",
@@ -11,15 +11,112 @@ conn = pymysql.connect(
     charset="utf8"
 )
 
-st.title("주차장 검색 시스템")
+st.title("스마트 주차장 검색 시스템")
 
-st.write("지역과 주차 유형을 선택하여 주차장을 검색하세요.")
+st.write("지역과 주차 유형을 선택하여 원하는 주차장을 찾을 수 있습니다.")
 
+# ------------------------
 # 지역 선택
+# ------------------------
+
 region = st.selectbox(
     "지역 선택",
     ["서울", "부산", "대구"]
 )
+
+# ------------------------
+# 주차 유형 체크박스
+# ------------------------
+
+st.subheader("주차 유형 선택")
+
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    female = st.checkbox("👩 여성전용")
+
+with col2:
+    ev = st.checkbox("🔌 전기차")
+
+with col3:
+    disabled = st.checkbox("♿ 장애인")
+
+selected_types = []
+
+if female:
+    selected_types.append("여성전용")
+
+if ev:
+    selected_types.append("전기차")
+
+if disabled:
+    selected_types.append("장애인")
+
+# ------------------------
+# 검색 버튼
+# ------------------------
+
+if st.button("주차장 검색"):
+
+    if selected_types:
+
+        type_list = ",".join([f"'{t}'" for t in selected_types])
+
+        query = f"""
+        SELECT p.parking_name, p.address, GROUP_CONCAT(t.type_name) as types
+        FROM parking_lot p
+        JOIN parking_space s ON p.parking_id = s.parking_id
+        JOIN parking_type t ON s.type_id = t.type_id
+        WHERE p.region = '{region}'
+        AND t.type_name IN ({type_list})
+        GROUP BY p.parking_id
+        HAVING COUNT(DISTINCT t.type_name) = {len(selected_types)}
+        """
+
+    else:
+        query = f"""
+        SELECT parking_name, address, '' as types
+        FROM parking_lot
+        WHERE region = '{region}'
+        """
+
+    df = pd.read_sql(query, conn)
+
+    if df.empty:
+        st.warning("검색 결과가 없습니다.")
+    else:
+
+        st.success(f"{len(df)}개의 주차장을 찾았습니다.")
+
+        # ------------------------
+        # 카드 UI 출력
+        # ------------------------
+
+        for index, row in df.iterrows():
+
+            icons = ""
+
+            if "여성전용" in row["types"]:
+                icons += " 👩"
+
+            if "전기차" in row["types"]:
+                icons += " 🔌"
+
+            if "장애인" in row["types"]:
+                icons += " ♿"
+
+            st.markdown(
+                f"""
+                ### {row['parking_name']}
+
+                📍 주소: {row['address']}
+
+                🅿️ 주차 유형: {icons}
+
+                ---
+                """
+            )
+
 
 # 주차 유형 선택
 parking_type = st.selectbox(
