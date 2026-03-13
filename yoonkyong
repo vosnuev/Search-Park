@@ -31,10 +31,10 @@ with col1:
     female = st.checkbox("여성전용")
 
 with col2:
-    ev = st.checkbox("전기차")
+    ev = st.checkbox("전기차전용")
 
 with col3:
-    disabled = st.checkbox("장애인")
+    disabled = st.checkbox("장애인전용")
 
 selected_types = []
 
@@ -42,10 +42,10 @@ if female:
     selected_types.append("여성전용")
 
 if ev:
-    selected_types.append("전기차")
+    selected_types.append("전기차전용")
 
 if disabled:
-    selected_types.append("장애인")
+    selected_types.append("장애인전용")
 
 # 검색 버튼
 if st.button("주차장 검색"):
