@@ -1,0 +1,50 @@
+import streamlit as st
+import pandas as pd
+import pymysql
+
+# MySQL 연결
+conn = pymysql.connect(
+    host="localhost",
+    user="root",
+    password="1234",
+    database="parking_db",
+    charset="utf8"
+)
+
+st.title("🚗 주차장 검색 시스템")
+
+st.write("지역과 주차 유형을 선택하여 주차장을 검색하세요.")
+
+# 지역 선택
+region = st.selectbox(
+    "지역 선택",
+    ["서울", "부산", "대구"]
+)
+
+# 주차 유형 선택
+parking_type = st.selectbox(
+    "주차 유형 선택",
+    ["일반", "여성전용", "전기차", "장애인"]
+)
+
+# 검색 버튼
+if st.button("주차장 검색"):
+
+    query = f"""
+    SELECT p.parking_name, p.address, t.type_name
+    FROM parking_lot p
+    JOIN parking_space s
+        ON p.parking_id = s.parking_id
+    JOIN parking_type t
+        ON s.type_id = t.type_id
+    WHERE p.region = '{region}'
+    AND t.type_name = '{parking_type}'
+    """
+
+    df = pd.read_sql(query, conn)
+
+    if df.empty:
+        st.warning("검색 결과가 없습니다.")
+    else:
+        st.success(f"{len(df)}개의 주차장을 찾았습니다.")
+        st.dataframe(df)
