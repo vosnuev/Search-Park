@@ -1,5 +1,5 @@
 from pathlib import Path
-from db.raw.raw_db import Conn
+from db.db import Conn
 import csv
 
 DATA_DIR = Path("./src/data").resolve()
@@ -18,13 +18,24 @@ def importRawAddress():
             with Conn.cursor() as cursor:
                 for row in reader:
                     sql = """
-                        insert into address(address_code, val)
-                        values(%s,%s)
+                        insert ignore into address(address_code, sd_name, ssg_name, gemd_name)
+                        values(%s,%s,%s,%s)
                     """
-                    if row['is_use'] == '존재':                        
-                        cursor.execute(sql, (row['code'], row['value']))
-                        print(row)
-                
+                    if row['is_use'] == '존재':
+                        full_address = row['value']
+                        parts = full_address.split(" ")
+                        if len(parts) == 0:
+                            continue
+
+                        sd = parts[0]
+                        ssg = ''
+                        gemd = ''
+                        if len(parts) > 1:
+                            ssg = parts[1]
+                        if len(parts) > 2:
+                            gemd = parts[2]
+
+                        cursor.execute(sql, (row['code'],sd, ssg, gemd))
             Conn.commit()
     except Exception as e:
         print(e)
