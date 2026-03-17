@@ -10,14 +10,3 @@ create table if not exists car_park.car_registration (
     CONSTRAINT uq_car_registration UNIQUE KEY (sd_name, ssg_name, gemd_name),
     INDEX idx_address_code (address_code)
 ) ENGINE=INNODB COMMENT '자동차 등록 현황';
-
-
--- 1. 총 레코드 수 확인
-SELECT COUNT(*) FROM car_park.car_registration;
-
--- 2. 데이터 샘플 확인
-SELECT * FROM car_park.car_registration LIMIT 10;
-
--- 3. address_code NULL 여부 확인
-SELECT COUNT(*) FROM car_park.car_registration 
-WHERE address_code IS NULL;
