@@ -1,6 +1,5 @@
 """
 자동차 등록 현황 정제 스크립트
-RAW DB(car_park_raw) → 정제 DB(car_park) 데이터 변환 및 적재
 
 처리 내용:
 1. sigungu 컬럼에서 ssg_name, gemd_name 분리
@@ -86,14 +85,26 @@ def apply_exceptions(sido, ssg_name, gemd_name):
     return None, ssg_name, gemd_name
 
 
-def load_raw_data(engine):
-    """RAW DB에서 필요한 컬럼만 조회"""
-    query = """
-        SELECT reg_month, sido, sigungu,
-               total_gov, total_prv, total_com
-        FROM car_park_raw.car_registration_by_region
-    """
-    return pd.read_sql(query, engine)
+def load_raw_data():
+    df = pd.read_csv(
+        "src/data/자동차등록현황보고_자동차등록대수현황 시도별 (202602).txt",
+        encoding="utf-8", sep="\t", header=None, skiprows=2
+    )
+    df.columns = [
+        "reg_month", "sido", "sigungu",
+        "sedan_gov", "sedan_prv", "sedan_com", "sedan_tot",
+        "van_gov", "van_prv", "van_com", "van_tot",
+        "truck_gov", "truck_prv", "truck_com", "truck_tot",
+        "spec_gov", "spec_prv", "spec_com", "spec_tot",
+        "total_gov", "total_prv", "total_com", "total_tot"
+    ]
+    df = df[df["sigungu"].str.strip() != "계"].copy()
+
+    # 숫자 컬럼 쉼표 제거 후 정수 변환  ← 이거 추가!
+    for col in df.columns[3:]:
+        df[col] = df[col].apply(lambda x: int(str(x).replace(",", "").strip()))
+
+    return df
 
 
 def get_address_code(engine, sd_name, ssg_name, gemd_name):
@@ -128,7 +139,7 @@ def main():
 
         # STEP 1: RAW 데이터 로드
         print("\n[STEP 1] RAW 데이터 로드 중...")
-        df = load_raw_data(engine)
+        df = load_raw_data()
         print(f"  📂 로드 완료: {len(df):,}행")
 
         # STEP 2: 데이터 정제 및 address_code 매칭

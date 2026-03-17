@@ -1,4 +1,3 @@
--- Active: 1773024375814@@127.0.0.1@3306@mysql
 -- 자동차 등록 현황 정제 테이블 생성
 create table if not exists car_park.car_registration (
     address_code varchar(10)  null    comment '법정동 코드',
@@ -13,4 +12,12 @@ create table if not exists car_park.car_registration (
 ) ENGINE=INNODB COMMENT '자동차 등록 현황';
 
 
-SELECT * FROM car_park.car_registration LIMIT 256;
+-- 1. 총 레코드 수 확인
+SELECT COUNT(*) FROM car_park.car_registration;
+
+-- 2. 데이터 샘플 확인
+SELECT * FROM car_park.car_registration LIMIT 10;
+
+-- 3. address_code NULL 여부 확인
+SELECT COUNT(*) FROM car_park.car_registration 
+WHERE address_code IS NULL;
