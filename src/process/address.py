@@ -54,10 +54,19 @@ def importRawAddress():
         print(e)
 
 def mapping_parking_lot():
+    try:
+        with Conn.cursor() as cursor:
+            cursor.execute("""
+                            alter table parking_lot add column address_code varchar(11)
+                        """)
+        Conn.commit()
+    except:
+        pass
+
     with Conn.cursor() as cursor:
         offset = 0
         limit = 1000
-        while True:       
+        while True: 
             sql = f"select pl_id, base_address from parking_lot limit {limit} offset {offset}"
             cursor.execute(sql)
             rows = cursor.fetchall()
