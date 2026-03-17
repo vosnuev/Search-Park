@@ -27,7 +27,7 @@ class NaverReview:
             review_date="24.2.8.목"
         )
     """
-    pk_code    : int
+    pk_code    : str
     pk_name    : str
     pk_address : str
     review_txt : str
@@ -103,7 +103,7 @@ def clear_search_box(driver, search_box):
 # ================================================
 # 4. 크롤링 함수 - NaverReview 객체 리스트 반환
 # ================================================
-def fetch_reviews_from_naver(driver, pk_code: int, parking_name: str, parking_address: str) -> list:
+def fetch_reviews_from_naver(driver, pk_code: str, parking_name: str, parking_address: str) -> list:
     """
     네이버 지도에서 주차장 리뷰를 크롤링해서
     NaverReview 객체 리스트로 반환하는 함수
@@ -167,14 +167,32 @@ def fetch_reviews_from_naver(driver, pk_code: int, parking_name: str, parking_ad
             driver.switch_to.frame("entryIframe")
 
             try:
-                pz7wy_els       = driver.find_elements(By.CSS_SELECTOR, "span.pz7wy")
-                naver_addresses = [
-                    el.text.strip().rstrip(',').strip()
-                    for el in pz7wy_els if el.text.strip()
-                ]
-                print(f"  네이버 주소: {naver_addresses}")
+                naver_addresses = []
+                addr_div = driver.find_element(By.CSS_SELECTOR, "div.Y31Sf")
+                addr_rows = addr_div.find_elements(By.CSS_SELECTOR,"div.nQ7Lh")
+                for row in addr_rows:
+                    try:
+                        # span.TjXg1 텍스트(도로명/지번/우편번호) 제거하고 순수 주소만 추출
+                        label = row.find_element(By.CSS_SELECTOR, "span.TjXg1").text.strip()
+                        if label in ["도로명", "지번"]:  # 우편번호는 제외
+                            full_text = row.text.strip()
+                            addr_text = full_text.replace(label, "").replace("복사", "").strip()
+                            if addr_text:
+                                naver_addresses.append(addr_text)
+                                print(f"  네이버 주소({label}): {addr_text}")
+                    except:
+                        continue
             except:
                 naver_addresses = []
+        
+            #     pz7wy_els       = driver.find_elements(By.CSS_SELECTOR, "span.pz7wy")
+            #     naver_addresses = [
+            #         el.text.strip().rstrip(',').strip()
+            #         for el in pz7wy_els if el.text.strip()
+            #     ]
+            #     print(f"  네이버 주소: {naver_addresses}")
+            # except:
+            #     naver_addresses = []
 
             if any(is_address_match(parking_address, na) for na in naver_addresses):
                 print(f"  [{parking_name}] ✅ 주소 일치!")
@@ -286,7 +304,7 @@ def fetch_reviews_from_naver(driver, pk_code: int, parking_name: str, parking_ad
 def save_reviews_to_db(reviews: list, db_config: dict):
     """
     수집한 NaverReview 객체 리스트를
-    car_park.n_pkreviews 테이블에 저장하는 함수.                                # ← 가져올 table 이름 
+    car_park.n_pkreviews 테이블에 저장하는 함수.                                
     중복은 INSERT IGNORE로 무시.
     """
     if not reviews:
@@ -297,7 +315,7 @@ def save_reviews_to_db(reviews: list, db_config: dict):
     try:
         with conn.cursor() as cursor:       
             sql = """                                
-                INSERT IGNORE INTO n_pkreviews                               # ← 가져올 table 이름 
+                INSERT IGNORE INTO n_pkreviews                                
                     (pk_code, pk_name, pk_address, review_txt, review_date, crawled_at)
                 VALUES
                     (%(pk_code)s, %(pk_name)s, %(pk_address)s,

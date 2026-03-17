@@ -44,9 +44,9 @@ if __name__ == "__main__":
     source_conn = pymysql.connect(**DB)
     try:
         with source_conn.cursor() as cursor:
-            cursor.execute("SELECT pk_code, pk_name, pk_address FROM ex_pklots")      # ← from 가져올 table 이름 
+            cursor.execute("SELECT pl_id, pl_name, base_address, road_address FROM parking_lot")      # ← from 가져올 table 이름 
             parking_list = [
-                {"pk_code": row[0], "pk_name": row[1], "pk_address": row[2]}
+                {"pl_id": row[0], "pl_name": row[1], "address": row[2] if row[2] else row[3]}
                 for row in cursor.fetchall()
             ]
     finally:
@@ -54,7 +54,7 @@ if __name__ == "__main__":
 
     print("수집할 주차장 목록:")
     for p in parking_list:
-        print(f"  [{p['pk_code']}] {p['pk_name']} / {p['pk_address']}")
+        print(f"  [{p['pl_id']}] {p['pl_name']} / {p['address']}")
 
     # 2. 브라우저 실행
     options = webdriver.ChromeOptions()
@@ -70,13 +70,13 @@ if __name__ == "__main__":
     # 3. 주차장마다 크롤링 → DB 저장
     total_count = 0
     for parking in parking_list:
-        print(f"\n검색 중: [{parking['pk_code']}] {parking['pk_name']}")
+        print(f"\n검색 중: [{parking['pl_id']}] {parking['pl_name']}")
 
         reviews = fetch_reviews_from_naver(   # ← models에서 가져온 함수
             driver,
-            parking['pk_code'],
-            parking['pk_name'],
-            parking['pk_address']
+            parking['pl_id'],
+            parking['pl_name'],
+            parking['address']
         )
 
         save_reviews_to_db(reviews, DB)    # ← models에서 가져온 함수
