@@ -3,4 +3,4 @@
 이 공지를 최초로 확인했다면 아래의 과정을 따라주세요.
 파워쉘 터미널에서 해당 프로젝트 루트로 이동 아래의 명령어를 실행해주세요.
 
-python src\preprocess.py
+python src\preprocessor.py
