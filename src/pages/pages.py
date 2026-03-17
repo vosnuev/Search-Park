@@ -1,6 +1,6 @@
 import streamlit as st
-from second import run_stats  # second.py 가져오기
-from third import run_info # third.py 가져오기
+from .second import run_stats  # second.py 가져오기
+from .third import run_info # third.py 가져오기
 
 def load_pages():
     # 페이지 기본 설정
