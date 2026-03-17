@@ -1,3 +1,5 @@
+from pages import load_pages
 
 if __name__ == "__main__":
-    pass
+    load_pages()
+  
