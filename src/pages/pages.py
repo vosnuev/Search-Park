@@ -1,28 +1,54 @@
 import streamlit as st
-from .second import run_stats  # second.py 가져오기
-from .third import run_info # third.py 가져오기
+import mysql.connector
+import pandas as pd
+from second import run_stats 
+from third import run_info
 
 def load_pages():
-    # 페이지 기본 설정
     st.set_page_config(page_title="주차장 서비스", layout="wide")
-
-    # 사이드바에서 페이지 이동 메뉴 만들기
     st.sidebar.title("메뉴")
-    choice = st.sidebar.radio("페이지를 선택하세요", ["주차장 검색", "통계 분석", "안내 사항"])
+    choice = st.sidebar.radio("페이지 선택", ["주차장 검색", "통계", "안내"])
 
-    # 1번 페이지: 주차장 검색 (여기에 코드 직접 작성)
     if choice == "주차장 검색":
-        st.title("주차장 실시간 검색")
-        search = st.text_input("주차장 이름이나 지역을 입력하세요.")
+        st.title("주차장 검색")
         
-        if search:
-            st.write(f"'{search}' 검색 결과 화면입니다.")
-            # 여기에 데이터 필터링 로직 추가
+        # [중요] 사용자가 검색어를 입력할 칸이 먼저 있어야 함!
+        search = st.text_input("검색할 주차장 이름을 입력하세요")
 
-    # 2번 페이지: 통계 (second.py의 함수 실행)
-    elif choice == "통계 분석":
-        run_stats()
+        if search: # 사용자가 검색어를 입력하고 Enter를 쳤을 때만 실행
+            conn = mysql.connector.connect(
+                host="localhost", user="root", password="1234", database="car_park"
+            )
+            cursor = conn.cursor(dictionary=True)
 
-    # 3번 페이지: 안내 (third.py의 함수 실행)
-    elif choice == "안내 사항":
-        run_info()
+            # LIKE 문법: %를 써서 앞뒤 포함 검색
+            # 현재 작성하신 코드
+            query = "SELECT pl_name, base_address, etc, pl_type, op_days FROM parking_lot WHERE pl_name LIKE %s"
+            cursor.execute(query, (f"%{search}%",)) 
+            
+            results = cursor.fetchall()
+
+            if results:
+                # 1. 가져온 데이터를 표(데이터프레임) 형태로 만듭니다.
+                df = pd.DataFrame(results)
+                
+                # 2. 영문 컬럼명을 원하는 한글 이름으로 바꿔줍니다.
+                df = df.rename(columns={
+                    "pl_name": "주차장 이름",
+                    "base_address": "주소",
+                    "etc": "기타 정보",
+                    "pl_type": "주차장 종류",
+                    "op_days": "운영 요일"
+                })
+                
+                # 3. 이름이 바뀐 표를 화면에 띄웁니다.
+                st.dataframe(df)
+            else:
+                st.warning("결과가 없습니다.")
+
+            cursor.close()
+            conn.close()
+load_pages()
+    
+
+
