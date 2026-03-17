@@ -7,7 +7,10 @@ from webdriver_manager.chrome import ChromeDriverManager
 import pymysql
 import time
 import importlib.util
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 # 현재 파일이 있는 폴더 기준으로 경로 자동 설정
 BASE_DIR   = os.path.dirname(os.path.abspath(__file__))
@@ -23,23 +26,12 @@ save_reviews_to_db       = module.save_reviews_to_db
 # ================================================
 # DB 연결 설정
 # ================================================
-# [읽기용] 다른 사람 DB - 주차장 이름/주소 가져오는 곳
-SOURCE_DB = dict(
-    host='127.0.0.1',
-    port=3306,
-    user='vosnuevo',
-    password='vosnuevo',
-    database='car_park',   # ← 가져올 DB 이름
-    charset='utf8mb4'
-)
-
-# [저장용] 내 DB - 크롤링 결과 저장하는 곳
-TARGET_DB = dict(
-    host='127.0.0.1',
-    port=3306,
-    user='vosnuevo',
-    password='vosnuevo',
-    database='car_park',    # ← 저장할 DB 이름
+DB = dict(
+    host=os.getenv('DB_HOST'),
+    port=int(os.getenv('DB_PORT')),
+    user=os.getenv('DB_USER'),
+    password=os.getenv('DB_PASSWORD'),
+    database=os.getenv('DB_NAME'),
     charset='utf8mb4'
 )
 
@@ -49,7 +41,7 @@ TARGET_DB = dict(
 if __name__ == "__main__":
 
     # 1. 다른 사람 DB에서 주차장 목록 가져오기
-    source_conn = pymysql.connect(**SOURCE_DB)
+    source_conn = pymysql.connect(**DB)
     try:
         with source_conn.cursor() as cursor:
             cursor.execute("SELECT pk_code, pk_name, pk_address FROM ex_pklots")      # ← from 가져올 table 이름 
@@ -87,7 +79,7 @@ if __name__ == "__main__":
             parking['pk_address']
         )
 
-        save_reviews_to_db(reviews, TARGET_DB)   # ← models에서 가져온 함수
+        save_reviews_to_db(reviews, DB)    # ← models에서 가져온 함수
         total_count += len(reviews)
         time.sleep(1)
 
