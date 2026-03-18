@@ -1,16 +1,26 @@
+import sys
+import os
+# ▼ 파이썬이 상위 폴더(src)를 인식할 수 있도록 경로를 강제로 추가해 주는 마법의 코드입니다!
+sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
+
 import streamlit as st
 import mysql.connector
 import pandas as pd
 import datetime
-from .second import run_stats 
-from .third import run_info
+from second import run_stats 
+from third import run_info
+from forth import run_new
 from db.db import Conn
+
 
 def load_pages():
     st.set_page_config(page_title="주차장 서비스", layout="wide")
     st.sidebar.title("메뉴")
-    choice = st.sidebar.radio("페이지 선택", ["주차장 검색", "결제방식 통계", "지역별 주차장 통계"])
+    
+    # ▼ 여기에 "새로운 메뉴"를 추가했습니다! (원하시는 이름으로 바꿔주세요)
+    choice = st.sidebar.radio("페이지 선택", ["주차장 검색", "결제방식 통계", "지역별 주차장 통계", "새로운 메뉴"])
 
+    # 1. 주차장 검색 페이지
     if choice == "주차장 검색":
         st.title("주차장 검색")
         
@@ -22,7 +32,8 @@ def load_pages():
             is_open_now = st.checkbox("현재 운영 중인 주차장만 보기")
         with col2:
             pay_options = st.multiselect("결제 수단 선택", ["카드", "현금"])
-
+            
+        # 주차장 검색을 위한 DB 조회 로직
         if search:
             cursor = Conn.cursor(dictionary=True)
 
@@ -37,7 +48,7 @@ def load_pages():
             st.info(f"현재 조회 시각: **{now.strftime('%Y-%m-%d %H:%M:%S')}**")
 
             # p.has_priority 추가 완료된 단일 쿼리
-            query = f"""
+            query = """
                 SELECT 
                     p.pl_name, p.base_address, p.etc, p.pl_type, p.op_days,
                     p.has_priority,
@@ -114,11 +125,18 @@ def load_pages():
                 st.warning("조건에 맞는 주차장이 없습니다.")
 
             cursor.close()
+
+    # 2. 결제방식 통계 페이지
     elif choice == "결제방식 통계":
         run_stats()
+
+    # 3. 지역별 주차장 통계 페이지
     elif choice == "지역별 주차장 통계":
         run_info()
         
+    # ▼ 4. 새로운 메뉴 페이지 추가!
+    elif choice == "새로운 메뉴":
+        run_new()
 
 if __name__ == '__main__':
     load_pages()
