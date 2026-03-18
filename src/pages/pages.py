@@ -4,6 +4,7 @@ import pandas as pd
 import datetime
 from .second import run_stats 
 from .third import run_info
+from db.db import Conn
 
 def load_pages():
     st.set_page_config(page_title="주차장 서비스", layout="wide")
@@ -24,10 +25,7 @@ def load_pages():
             pay_options = st.multiselect("결제 수단 선택", ["카드", "현금"])
 
         if search:
-            conn = mysql.connector.connect(
-                host="localhost", user="root", password="1234", database="car_park"
-            )
-            cursor = conn.cursor(dictionary=True)
+            cursor = Conn.cursor(dictionary=True)
 
             now = datetime.datetime.now()
             current_time_str = now.strftime('%H:%M:%S')
@@ -112,7 +110,6 @@ def load_pages():
                 st.warning("조건에 맞는 주차장이 없습니다.")
 
             cursor.close()
-            conn.close()
     elif choice == "결제방식 통계":
         run_stats()
     elif choice == "지역별 주차장 통계":

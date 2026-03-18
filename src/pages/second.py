@@ -1,13 +1,22 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, URL
+from db.db import Conn
+from urllib.parse import quote_plus
 
 
 def run_stats():
     st.title("동별 결제수단 통계")
-
-    engine = create_engine("mysql+pymysql://root:0630@127.0.0.1:3306/car_park")
+    url = URL.create(
+        drivername="mysql+mysqlconnector",
+        username=Conn.user,
+        password=Conn._password,  # 특수문자 걱정 없음
+        host=Conn._host,
+        port=Conn._port,
+        database=Conn.database,
+    )
+    engine = create_engine(url)
 
     query = """
     SELECT
