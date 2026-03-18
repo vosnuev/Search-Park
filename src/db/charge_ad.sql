@@ -1,0 +1,5 @@
+ALTER TABLE ev_charger_info
+ADD COLUMN address_code VARCHAR(10);
+
+ALTER TABLE ev_charger_info
+ADD COLUMN ev_id INT AUTO_INCREMENT PRIMARY KEY;
