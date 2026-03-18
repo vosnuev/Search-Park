@@ -57,12 +57,4 @@
 
 ## 5. 🗄️ 데이터베이스 설계 (ERD)
 
-**📌 설계 핵심** `address_code`를 기준으로 **주차장 데이터**와 **차량 등록 데이터**를 통합하여 지역별 비교 분석이 가능하도록 설계했습니다.
-
-```mermaid
-erDiagram
-    parking_lot ||--o{ parking_lot_payment : "has"
-    payment_type ||--o{ parking_lot_payment : "used_in"
-    parking_lot ||--o{ operating_hours : "operates_at"
-    address_unit ||--o{ parking_lot : "located_in"
-    address_unit ||--o{ car_registration : "registered_in"
+![ERD](./최종ERD.png)
