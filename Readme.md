@@ -58,3 +58,13 @@
 ## 5. 🗄️ 데이터베이스 설계 (ERD)
 
 ![ERD](./최종ERD.png)
+
+## 6. Quick Start
+
+### 전처리
+* pip install -r requirements.txt
+* python src\preprocessor.py
+* (선택) 크롤링 데이터 적재 : src\db\result_crawling.sql 실행
+
+### 프로그램 시작
+streamlit run src\main.py
