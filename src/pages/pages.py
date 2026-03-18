@@ -20,7 +20,6 @@ def load_pages():
         with col1:
             is_open_now = st.checkbox("현재 운영 중인 주차장만 보기")
         with col2:
-            # [추가] 결제 수단 선택 필터
             pay_options = st.multiselect("결제 수단 선택", ["카드", "현금"])
 
         if search:
@@ -39,10 +38,11 @@ def load_pages():
 
             st.info(f"현재 조회 시각: **{now.strftime('%Y-%m-%d %H:%M:%S')}**")
 
-            # [수정] 결제 수단 정보를 가져오기 위해 GROUP_CONCAT 사용
+            # p.has_priority 추가 완료된 단일 쿼리
             query = f"""
                 SELECT 
                     p.pl_name, p.base_address, p.etc, p.pl_type, p.op_days,
+                    p.has_priority,
                     h.start_time, h.end_time,
                     GROUP_CONCAT(DISTINCT pay.pay_name) AS pay_methods
                 FROM parking_lot p
@@ -56,11 +56,11 @@ def load_pages():
 
             # 결제 수단 필터링 조건 추가
             if pay_options:
-                # 선택한 결제 수단 중 하나라도 포함된 주차장 검색
                 placeholders = ', '.join(['%s'] * len(pay_options))
                 query += f" AND pay.pay_name IN ({placeholders})"
                 params.extend(pay_options)
 
+            # 운영 중 필터링 조건 추가
             if is_open_now:
                 query += f"""
                   AND NOT (h.start_time = '00:00:00' AND h.end_time = '00:00:00')
@@ -97,11 +97,15 @@ def load_pages():
                         minutes, _ = divmod(remainder, 60)
                         time_left = f"{hours}시간 {minutes}분 남음"
 
+                    # 장애인 주차구역 텍스트 변환
+                    priority_status = "O" if row['has_priority'] == 1 else "X"
+
                     processed_data.append({
                         "주차장 이름": row['pl_name'],
                         "주소": row['base_address'],
                         "현재 상태": status,
                         "마감까지 남은 시간": time_left,
+                        "장애인 주차구역": priority_status,
                         "결제 수단": row['pay_methods'] if row['pay_methods'] else "정보 없음",
                         "기타 정보": row['etc']
                     })
