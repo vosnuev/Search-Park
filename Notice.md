@@ -6,7 +6,7 @@
 ### 전처리
 * pip install -r requirements.txt
 * python src\preprocessor.py
-* (선택) 크롤링 데이터 적재 : src\collect\02.naver_map_db.sql 실행
+* (선택) 크롤링 데이터 적재 : src\db\result_crawling.sql 실행
 
 ### 프로그램 시작
 streamlit run src\main.py
