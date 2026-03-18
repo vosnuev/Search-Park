@@ -14,7 +14,6 @@ from db.db import Conn
 
 
 def load_pages():
-    st.set_page_config(page_title="주차장 서비스", layout="wide")
     st.sidebar.title("메뉴")
     
     # ▼ 여기에 "새로운 메뉴"를 추가했습니다! (원하시는 이름으로 바꿔주세요)
