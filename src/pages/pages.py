@@ -21,7 +21,7 @@ def load_pages():
             is_open_now = st.checkbox("현재 운영 중인 주차장만 보기")
         with col2:
             # [추가] 결제 수단 선택 필터
-            pay_options = st.multiselect("결제 수단 선택 (미선택 시 전체)", ["카드", "현금"])
+            pay_options = st.multiselect("결제 수단 선택", ["카드", "현금"])
 
         if search:
             conn = mysql.connector.connect(
