@@ -1,0 +1,1 @@
+SELECT * FROM parking_lot WHERE pl_name LIKE '강남%'

@@ -14,7 +14,7 @@ load_dotenv()
 
 # 현재 파일이 있는 폴더 기준으로 경로 자동 설정
 BASE_DIR   = os.path.dirname(os.path.abspath(__file__))
-MODEL_PATH = os.path.join(BASE_DIR, "03.naver_models.py")    # 파일경로 설정
+MODEL_PATH = os.path.join(BASE_DIR, "naver_models.py")    # 파일경로 설정
 
 spec   = importlib.util.spec_from_file_location("naver_models", MODEL_PATH)
 module = importlib.util.module_from_spec(spec)
@@ -38,7 +38,7 @@ DB = dict(
 # ================================================
 # 메인 실행
 # ================================================
-if __name__ == "__main__":
+def run():
 
     # 1. 다른 사람 DB에서 주차장 목록 가져오기
     source_conn = pymysql.connect(**DB)
