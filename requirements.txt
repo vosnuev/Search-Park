@@ -4,3 +4,4 @@ pandas
 sqlalchemy
 mysql-connector-python
 python-dotenv
+webdriver_manager
