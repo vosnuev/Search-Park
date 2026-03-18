@@ -1,19 +1,8 @@
 import csv
-import mysql.connector
-
-
-def get_connection():
-    return mysql.connector.connect(
-        host="127.0.0.1",
-        user="root",
-        password="0630",
-        database="car_park"
-    )
-
+from db.db import Conn
 
 def create_payment_type_table():
-    conn = get_connection()
-    cursor = conn.cursor()
+    cursor = Conn.cursor()
 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS payment_type (
@@ -25,10 +14,8 @@ def create_payment_type_table():
     )
     """)
 
-    conn.commit()
+    Conn.commit()
     cursor.close()
-    conn.close()
-
 
 def parse_payment_rows(csv_path):
     payment_rows = []
@@ -58,8 +45,7 @@ def parse_payment_rows(csv_path):
 
 
 def load_payment_type_data(csv_path):
-    conn = get_connection()
-    cursor = conn.cursor()
+    cursor = Conn.cursor()
 
     payment_rows = parse_payment_rows(csv_path)
     print("삽입할 결제 데이터 개수:", len(payment_rows))
@@ -70,12 +56,11 @@ def load_payment_type_data(csv_path):
     """
 
     cursor.executemany(sql, payment_rows)
-    conn.commit()
+    Conn.commit()
 
     print("payment_type insert 완료")
 
     cursor.close()
-    conn.close()
 
 
 def run(csv_path):
