@@ -4,9 +4,9 @@ from process.operation_time import run as op_run
 from process.payment import run as pay_run
 from process.address import mapping_parking_lot
 
-# 1. 질문자님이 만든 기능을 가져옵니다 (예시)
 # 만약 파일명이 forth.py이고 함수가 run_new라면:
-from forth import run_new 
+
+from pages.forth import run_new
 
 print("데이터 전처리를 시작합니다...")
 
