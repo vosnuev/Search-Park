@@ -1,0 +1,671 @@
+{
+  "entityData": [
+    {
+      "_id": "LKnww8WMPc6AaCZkS",
+      "_diagramId": "AZZozHrirXQ6XSWp7",
+      "position": {
+        "x": 590,
+        "y": 610
+      },
+      "name": "address",
+      "pName": "address",
+      "fields": [
+        {
+          "_id": "RHj5cqSmCv9vFzCAw",
+          "name": "sd_name",
+          "pName": "sd_name",
+          "domain": "",
+          "type": "varchar(100)",
+          "defaultValue": "",
+          "isAllowNull": false,
+          "comment": "시/도 이름",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "NtohaacMP9cJAdhFb",
+          "name": "ssg_name",
+          "pName": "ssg_name",
+          "domain": "",
+          "type": "varchar(100)",
+          "defaultValue": "",
+          "isAllowNull": false,
+          "comment": "시/군/구 이름",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "oSqM9YFEDinvvrqHe",
+          "name": "gemd_name",
+          "pName": "gemd_name",
+          "domain": "",
+          "type": "varchar(100)",
+          "defaultValue": "",
+          "isAllowNull": false,
+          "comment": "구/읍/면/동 이름",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        }
+      ],
+      "keys": {
+        "pks": [
+          {
+            "_id": "LkkB5p2yNypnMy5eu",
+            "name": "address_code",
+            "pName": "address_code",
+            "domain": "",
+            "type": "varchar(10)",
+            "defaultValue": "",
+            "isAllowNull": false,
+            "comment": "법정동 코드",
+            "relEntity": null,
+            "relFieldId": null,
+            "relType": null
+          }
+        ],
+        "fks": []
+      },
+      "color": "rgba(10, 10, 10, 0.5)"
+    },
+    {
+      "_id": "aeTLfk8iRFhJntiuq",
+      "_diagramId": "AZZozHrirXQ6XSWp7",
+      "position": {
+        "x": 1060,
+        "y": 620
+      },
+      "name": "car_registration",
+      "pName": "car_registration",
+      "fields": [
+        {
+          "_id": "AdJhEJjkSbxafzZEu",
+          "name": "sd_name",
+          "pName": "sd_name",
+          "domain": "",
+          "type": "varchar(100)",
+          "defaultValue": "",
+          "isAllowNull": false,
+          "comment": "시/도 이름",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "c5Gct965mBy349kdC",
+          "name": "ssg_name",
+          "pName": "ssg_name",
+          "domain": "",
+          "type": "varchar(100)",
+          "defaultValue": "",
+          "isAllowNull": false,
+          "comment": "시/군/구 이름",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "H34s4C94quHAhkP5L",
+          "name": "gemd_name",
+          "pName": "gemd_name",
+          "domain": "",
+          "type": "varchar(100)",
+          "defaultValue": "",
+          "isAllowNull": false,
+          "comment": "구/읍/면/동 이름",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "eJzj3NK6goWhBkge6",
+          "name": "total_gov",
+          "pName": "total_gov",
+          "domain": "",
+          "type": "int",
+          "defaultValue": [
+            "'0'"
+          ],
+          "isAllowNull": true,
+          "comment": "관용 자동차수",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "YAJm3daxYiBjxYsLH",
+          "name": "total_prv",
+          "pName": "total_prv",
+          "domain": "",
+          "type": "int",
+          "defaultValue": [
+            "'0'"
+          ],
+          "isAllowNull": true,
+          "comment": "자가용 자동차수",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "rJFeB8sG8mscRzdRi",
+          "name": "total_com",
+          "pName": "total_com",
+          "domain": "",
+          "type": "int",
+          "defaultValue": [
+            "'0'"
+          ],
+          "isAllowNull": true,
+          "comment": "영업용 자동차수",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "bSxrn2JmRj97gYRZb",
+          "name": "address_code",
+          "pName": "address_code",
+          "domain": "",
+          "type": "varchar(10)",
+          "defaultValue": "",
+          "isAllowNull": false,
+          "comment": "법정동 코드",
+          "relEntity": "LKnww8WMPc6AaCZkS",
+          "relFieldId": "LkkB5p2yNypnMy5eu",
+          "relType": "ZERO_OR_ONE_OR_MANY",
+          "relGroupId": "rgjffDEFYAsFh7PWM"
+        }
+      ],
+      "keys": {
+        "pks": [],
+        "fks": []
+      },
+      "color": "rgba(10, 10, 10, 0.5)"
+    },
+    {
+      "_id": "igpJaNamh5oWda3Bp",
+      "_diagramId": "AZZozHrirXQ6XSWp7",
+      "position": {
+        "x": 600,
+        "y": 800
+      },
+      "name": "n_pkreviews",
+      "pName": "n_pkreviews",
+      "fields": [
+        {
+          "_id": "eNC2DqAGTMCmHYZ9Q",
+          "name": "pk_code",
+          "pName": "pk_code",
+          "domain": "",
+          "type": "varchar(255)",
+          "defaultValue": "",
+          "isAllowNull": false,
+          "comment": "주차장코드",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "x2ne7c8fkxxBKefoi",
+          "name": "pk_name",
+          "pName": "pk_name",
+          "domain": "",
+          "type": "varchar(255)",
+          "defaultValue": "",
+          "isAllowNull": false,
+          "comment": "주차장이름",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "XyjbbP8QyQjAgFAba",
+          "name": "pk_address",
+          "pName": "pk_address",
+          "domain": "",
+          "type": "varchar(255)",
+          "defaultValue": "",
+          "isAllowNull": false,
+          "comment": "주소",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "PhyTNpQmvFn4ghFbG",
+          "name": "review_txt",
+          "pName": "review_txt",
+          "domain": "",
+          "type": "text",
+          "defaultValue": "",
+          "isAllowNull": false,
+          "comment": "리뷰",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "mHpXjArfpWbt3B6FP",
+          "name": "review_date",
+          "pName": "review_date",
+          "domain": "",
+          "type": "varchar(20)",
+          "defaultValue": "NULL",
+          "isAllowNull": true,
+          "comment": "리뷰날짜",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "5dNvB683QnXn29NRW",
+          "name": "crawled_at",
+          "pName": "crawled_at",
+          "domain": "",
+          "type": "datetime",
+          "defaultValue": "",
+          "isAllowNull": false,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "hDxN2bMvBNH9sGXjs",
+          "name": "pl_id",
+          "pName": "pl_id",
+          "domain": "",
+          "type": "varchar(50)",
+          "defaultValue": "",
+          "isAllowNull": false,
+          "comment": "",
+          "relEntity": "RQ8nFGKDsXtbB96X9",
+          "relFieldId": "iA68LGQjC5CFYahYb",
+          "relType": "ZERO_OR_ONE_OR_MANY",
+          "relGroupId": "cFstWbYRJzFWK7EGR"
+        }
+      ],
+      "keys": {
+        "pks": [
+          {
+            "_id": "pdijAqdGsHgynZdi9",
+            "name": "category_code",
+            "pName": "category_code",
+            "domain": "",
+            "type": "int",
+            "defaultValue": "",
+            "isAllowNull": false,
+            "comment": "카테고리코드",
+            "relEntity": null,
+            "relFieldId": null,
+            "relType": null
+          }
+        ],
+        "fks": []
+      },
+      "color": "rgba(10, 10, 10, 0.5)"
+    },
+    {
+      "_id": "RQ8nFGKDsXtbB96X9",
+      "_diagramId": "AZZozHrirXQ6XSWp7",
+      "position": {
+        "x": 50,
+        "y": 620
+      },
+      "name": "parking_lot",
+      "pName": "parking_lot",
+      "fields": [
+        {
+          "_id": "Pc5YBKiibXrJPk7mz",
+          "name": "pl_name",
+          "pName": "pl_name",
+          "domain": "",
+          "type": "varchar(255)",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "BsqhQ39CyzLT9LvZ7",
+          "name": "pl_geom",
+          "pName": "pl_geom",
+          "domain": "",
+          "type": "point",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "kftZvuHR8HsvCuM2P",
+          "name": "is_free",
+          "pName": "is_free",
+          "domain": "",
+          "type": "tinyint(1)",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "JTuPtrN3jvsmjHw7x",
+          "name": "capacity",
+          "pName": "capacity",
+          "domain": "",
+          "type": "int",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "sc9X2dhgRMXhd6hPQ",
+          "name": "road_address",
+          "pName": "road_address",
+          "domain": "",
+          "type": "varchar(255)",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "yMD7dXFtwMhCPQi3t",
+          "name": "base_address",
+          "pName": "base_address",
+          "domain": "",
+          "type": "varchar(255)",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "5WvwYLMCgDj76apAs",
+          "name": "is_public",
+          "pName": "is_public",
+          "domain": "",
+          "type": "tinyint(1)",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "ny9NBZ86eckMmsMLW",
+          "name": "etc",
+          "pName": "etc",
+          "domain": "",
+          "type": "text",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "yG4nfGJvgExAwdZ5q",
+          "name": "pl_type",
+          "pName": "pl_type",
+          "domain": "",
+          "type": "varchar(10)",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "Jwjeo88hWn7Do4ihr",
+          "name": "has_priority",
+          "pName": "has_priority",
+          "domain": "",
+          "type": "tinyint(1)",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "eeYmpep5eEoGQruLF",
+          "name": "op_days",
+          "pName": "op_days",
+          "domain": "",
+          "type": "varchar(50)",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "rvxrsBvHwhvYdqfrX",
+          "name": "base_time",
+          "pName": "base_time",
+          "domain": "",
+          "type": "decimal(10,2)",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "xztkEqbo43Kg95XHS",
+          "name": "base_fee",
+          "pName": "base_fee",
+          "domain": "",
+          "type": "int",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "RxZc9FJHK7LWX6wYz",
+          "name": "unit_time",
+          "pName": "unit_time",
+          "domain": "",
+          "type": "decimal(10,2)",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "teoFLMn9sZ9386Avx",
+          "name": "unit_fee",
+          "pName": "unit_fee",
+          "domain": "",
+          "type": "int",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "W7ABWJN2TFurjnpsL",
+          "name": "address_code",
+          "pName": "address_code2",
+          "domain": "",
+          "type": "varchar(10)",
+          "defaultValue": "",
+          "isAllowNull": false,
+          "comment": "법정동 코드",
+          "relEntity": "LKnww8WMPc6AaCZkS",
+          "relFieldId": "LkkB5p2yNypnMy5eu",
+          "relType": "ZERO_OR_ONE_OR_MANY",
+          "relGroupId": "Brpa2CFzfRuxZkKgc"
+        }
+      ],
+      "keys": {
+        "pks": [
+          {
+            "_id": "iA68LGQjC5CFYahYb",
+            "name": "pl_id",
+            "pName": "pl_id",
+            "domain": "",
+            "type": "varchar(50)",
+            "defaultValue": "",
+            "isAllowNull": false,
+            "comment": "",
+            "relEntity": null,
+            "relFieldId": null,
+            "relType": null
+          }
+        ],
+        "fks": []
+      },
+      "color": "rgba(10, 10, 10, 0.5)"
+    },
+    {
+      "_id": "yWit49ymtjh6GLyqi",
+      "_diagramId": "AZZozHrirXQ6XSWp7",
+      "position": {
+        "x": 50,
+        "y": 1030
+      },
+      "name": "operation_time",
+      "pName": "operation_time",
+      "fields": [
+        {
+          "_id": "kaoWCXs2dinKAJoix",
+          "name": "start_time",
+          "pName": "start_time",
+          "domain": "",
+          "type": "time",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        },
+        {
+          "_id": "utNShLWnQNcHssS6X",
+          "name": "end_time",
+          "pName": "end_time",
+          "domain": "",
+          "type": "time",
+          "defaultValue": "",
+          "isAllowNull": true,
+          "comment": "",
+          "relEntity": null,
+          "relFieldId": null,
+          "relType": null
+        }
+      ],
+      "keys": {
+        "pks": [
+          {
+            "_id": "mKGiHFmGr6x43e2Jj",
+            "name": "op_type",
+            "pName": "op_type",
+            "domain": "",
+            "type": "enum('평일','토요일','공휴일')",
+            "defaultValue": "",
+            "isAllowNull": false,
+            "comment": "",
+            "relEntity": null,
+            "relFieldId": null,
+            "relType": null
+          }
+        ],
+        "fks": [
+          {
+            "_id": "gQeMct7CM6KSEqmRi",
+            "name": "pl_id",
+            "pName": "pl_id",
+            "domain": "",
+            "type": "varchar(50)",
+            "defaultValue": "",
+            "isAllowNull": false,
+            "comment": "",
+            "relEntity": "RQ8nFGKDsXtbB96X9",
+            "relFieldId": "iA68LGQjC5CFYahYb",
+            "relType": "ZERO_OR_ONE_OR_MANY"
+          }
+        ]
+      }
+    },
+    {
+      "_id": "2vJpoiLTKMFZApStK",
+      "_diagramId": "AZZozHrirXQ6XSWp7",
+      "position": {
+        "x": 50,
+        "y": 1190
+      },
+      "name": "payment_type",
+      "pName": "payment_type",
+      "fields": [],
+      "keys": {
+        "pks": [
+          {
+            "_id": "xoKBsT2kCj8GHGxKD",
+            "name": "pay_name",
+            "pName": "pay_name",
+            "domain": "",
+            "type": "varchar(20)",
+            "defaultValue": "",
+            "isAllowNull": false,
+            "comment": "",
+            "relEntity": null,
+            "relFieldId": null,
+            "relType": null
+          }
+        ],
+        "fks": [
+          {
+            "_id": "3uTGxLysA5tRvPgts",
+            "name": "pl_id",
+            "pName": "pl_id",
+            "domain": "",
+            "type": "varchar(50)",
+            "defaultValue": "",
+            "isAllowNull": false,
+            "comment": "",
+            "relEntity": "RQ8nFGKDsXtbB96X9",
+            "relFieldId": "iA68LGQjC5CFYahYb",
+            "relType": "ZERO_OR_ONE_OR_MANY"
+          }
+        ]
+      },
+      "color": "rgba(10, 10, 10, 0.5)"
+    }
+  ],
+  "memoData": [],
+  "domainData": [],
+  "createdAt": "2026-03-18T08:43:48.338Z",
+  "creatorName": "박건우",
+  "creatorThumb": "https://d2sqqdb3t4xrq5.cloudfront.net/images/no_img.jpg"
+}
