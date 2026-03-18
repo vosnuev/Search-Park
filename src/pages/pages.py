@@ -8,7 +8,7 @@ import mysql.connector
 import pandas as pd
 import datetime
 from .second import run_stats 
-from .third import run_info
+from .third import run_stats as third_stats
 from .forth import run_new
 from db.db import Conn
 
@@ -137,7 +137,7 @@ def load_pages():
 
     # 3. 지역별 주차장 통계 페이지
     elif choice == "지역별 주차장 통계":
-        run_info()
+        third_stats()
         
     # ▼ 4. 새로운 메뉴 페이지 추가!
     elif choice == "새로운 메뉴":
