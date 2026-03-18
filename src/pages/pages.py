@@ -2,8 +2,8 @@ import streamlit as st
 import mysql.connector
 import pandas as pd
 import datetime
-from second import run_stats 
-from third import run_info
+from .second import run_stats 
+from .third import run_info
 
 def load_pages():
     st.set_page_config(page_title="주차장 서비스", layout="wide")
@@ -113,6 +113,11 @@ def load_pages():
 
             cursor.close()
             conn.close()
+    elif choice == "결제방식 통계":
+        run_stats()
+    elif choice == "지역별 주차장 통계":
+        run_info()
+        
 
 if __name__ == '__main__':
     load_pages()
