@@ -13,7 +13,7 @@ Conn = mysql.connector.connect(
     database=os.getenv('DB_NAME', 'car_park')
 )
 
-def initNaverTable():
+def init_review_table():
     with Conn.cursor() as cursor:
         cursor.execute("""
                         CREATE TABLE IF NOT EXISTS n_pkreviews (

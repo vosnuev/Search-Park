@@ -7,9 +7,9 @@ import streamlit as st
 import mysql.connector
 import pandas as pd
 import datetime
-from second import run_stats 
-from third import run_info
-from forth import run_new
+from .second import run_stats 
+from .third import run_info
+from .forth import run_new
 from db.db import Conn
 
 
@@ -126,28 +126,22 @@ def load_pages():
 
             cursor.close()
 
-<<<<<<< HEAD
-    # 2. 결제방식 통계 페이지
-=======
             selected_rows = table.selection.rows
             if selected_rows:
                 row = df.iloc[selected_rows[0]]
                 show_review(row)
 
 
->>>>>>> 9672e29ace8feabc80e2ea633b2d699f6b75483e
     elif choice == "결제방식 통계":
         run_stats()
 
     # 3. 지역별 주차장 통계 페이지
     elif choice == "지역별 주차장 통계":
         run_info()
-<<<<<<< HEAD
         
     # ▼ 4. 새로운 메뉴 페이지 추가!
     elif choice == "새로운 메뉴":
         run_new()
-=======
 
 def show_review(row):
     field = (row['주차장 이름'],)
@@ -162,7 +156,6 @@ def show_review(row):
     if review:
         st.table(review)
 
->>>>>>> 9672e29ace8feabc80e2ea633b2d699f6b75483e
 
 if __name__ == '__main__':
     load_pages()

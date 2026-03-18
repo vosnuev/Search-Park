@@ -1,2 +1,2 @@
 from .db import Conn
-from .db import initNaverTable
+from .db import init_review_table
