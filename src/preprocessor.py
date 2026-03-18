@@ -3,9 +3,13 @@ from process.parking_lot import load_parking_lot
 from process.operation_time import run as op_run
 from process.payment import run as pay_run
 from process.address import mapping_parking_lot
+from collect.naver_logic import run as collect_run
+from db.db import initNaverTable
 
 importRawAddress()
 load_parking_lot()
 op_run('./src/data/전국주차장정보표준데이터_1.csv')
 pay_run('./src/data/전국주차장정보표준데이터_1.csv')
 mapping_parking_lot()
+initNaverTable()
+collect_run()
