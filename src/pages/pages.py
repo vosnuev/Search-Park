@@ -105,16 +105,36 @@ def load_pages():
                     })
 
                 df = pd.DataFrame(processed_data)
-                st.dataframe(df, use_container_width=True)
+                table = st.dataframe(df, use_container_width=True, on_select="rerun", selection_mode="single-row")
             else:
                 st.warning("조건에 맞는 주차장이 없습니다.")
 
             cursor.close()
+
+            selected_rows = table.selection.rows
+            if selected_rows:
+                row = df.iloc[selected_rows[0]]
+                show_review(row)
+
+
     elif choice == "결제방식 통계":
         run_stats()
     elif choice == "지역별 주차장 통계":
         run_info()
-        
+
+def show_review(row):
+    field = (row['주차장 이름'],)
+    review = []
+    with Conn.cursor() as cursor:
+        cursor.execute("""
+            select pk_name, review_txt, review_date
+            from n_pkreviews
+            where pk_name = %s
+        """, field)
+        review = cursor.fetchall()
+    if review:
+        st.table(review)
+
 
 if __name__ == '__main__':
     load_pages()
