@@ -1,103 +1,97 @@
 from pathlib import Path
-from db.db import Conn
-import csv
+from db.db import get_connection
 
 DATA_DIR = Path("./src/data").resolve()
 
-# 주소 데이터베이스 전처리
+
 def importRawAddress():
-    # Fixme: 파일 경로 변경
     file_path = DATA_DIR / "주소원본.csv"
+    import csv
+
     try:
-        with Conn.cursor() as cursor:
-            cursor.execute("""
-                           create table if not exists car_park.address(
-                                address_code varchar(10) not null comment '법정동 코드',
-                                sd_name varchar(100) not null comment '시/도 이름',
-                                ssg_name varchar(100) not null comment '시/군/구 이름',
-                                gemd_name varchar(100) not null comment '구/읍/면/동 이름',
-                                CONSTRAINT pk_address PRIMARY KEY (address_code),
-                                CONSTRAINT uk_address UNIQUE KEY (sd_name, ssg_name, gemd_name)
-                            ) ENGINE=INNODB COMMENT '주소';
-                        """)
-        Conn.commit()
+        with get_connection() as conn:
+            with conn.cursor() as cursor:
+                cursor.execute("""
+                    CREATE TABLE IF NOT EXISTS car_park.address(
+                        address_code varchar(10) not null comment '법정동 코드',
+                        sd_name varchar(100) not null comment '시/도 이름',
+                        ssg_name varchar(100) not null comment '시/군/구 이름',
+                        gemd_name varchar(100) not null comment '구/읍/면/동 이름',
+                        CONSTRAINT pk_address PRIMARY KEY (address_code),
+                        CONSTRAINT uk_address UNIQUE KEY (sd_name, ssg_name, gemd_name)
+                    ) ENGINE=INNODB COMMENT '주소';
+                """)
 
-        with open(file_path, mode='r', encoding='utf-8-sig', newline='') as csvfile:
-            reader = csv.DictReader(csvfile)
+            with open(file_path, mode='r', encoding='utf-8-sig', newline='') as csvfile:
+                reader = csv.DictReader(csvfile)
 
-            if reader.fieldnames is None:
-                raise ValueError("CSV 파일에 헤더(첫 줄)가 없습니다.")
-            
-            with Conn.cursor() as cursor:
-                for row in reader:
-                    sql = """
-                        insert ignore into address(address_code, sd_name, ssg_name, gemd_name)
-                        values(%s,%s,%s,%s)
-                    """
-                    if row['is_use'] == '존재':
-                        full_address = row['value']
-                        parts = full_address.split(" ")
-                        if len(parts) == 0:
-                            continue
+                if reader.fieldnames is None:
+                    raise ValueError("CSV 파일에 헤더(첫 줄)가 없습니다.")
 
-                        sd = parts[0]
-                        ssg = ''
-                        gemd = ''
-                        if len(parts) > 1:
-                            ssg = parts[1]
-                        if len(parts) > 2:
-                            gemd = parts[2]
+                with conn.cursor() as cursor:
+                    for row in reader:
+                        if row['is_use'] == '존재':
+                            full_address = row['value']
+                            parts = full_address.split(" ")
+                            if len(parts) == 0:
+                                continue
 
-                        cursor.execute(sql, (row['code'],sd, ssg, gemd))
-            Conn.commit()
+                            sd = parts[0]
+                            ssg = parts[1] if len(parts) > 1 else ''
+                            gemd = parts[2] if len(parts) > 2 else ''
+
+                            cursor.execute(
+                                "INSERT IGNORE INTO address(address_code, sd_name, ssg_name, gemd_name) VALUES(%s,%s,%s,%s)",
+                                (row['code'], sd, ssg, gemd)
+                            )
     except Exception as e:
-        print(e)
+        print(f"importRawAddress 오류: {e}")
+        raise
+
 
 def mapping_parking_lot():
-    try:
-        with Conn.cursor() as cursor:
-            cursor.execute("""
-                            alter table parking_lot add column address_code varchar(11)
-                        """)
-        Conn.commit()
-    except:
-        pass
+    with get_connection() as conn:
+        # address_code 컬럼 추가 (이미 존재하면 무시)
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute("ALTER TABLE parking_lot ADD COLUMN address_code varchar(11)")
+        except Exception:
+            pass  # 컬럼이 이미 존재하는 경우 무시
 
-    with Conn.cursor() as cursor:
-        offset = 0
-        limit = 1000
-        while True: 
-            sql = f"select pl_id, base_address from parking_lot limit {limit} offset {offset}"
-            cursor.execute(sql)
-            rows = cursor.fetchall()
-            if not len(rows):
-                break
+        with conn.cursor() as cursor:
+            offset = 0
+            limit = 1000
+            while True:
+                cursor.execute(
+                    "SELECT pl_id, base_address FROM parking_lot LIMIT %s OFFSET %s",
+                    (limit, offset)
+                )
+                rows = cursor.fetchall()
+                if not rows:
+                    break
 
-            for row in rows:
-                if len(row) < 2:
-                    continue
-                parts = row[1].split(" ")
-                if parts[0] == "강원도":
-                    parts[0] = "강원특별자치도"
+                for row in rows:
+                    if len(row) < 2:
+                        continue
+                    parts = row[1].split(" ")
+                    if parts[0] == "강원도":
+                        parts[0] = "강원특별자치도"
 
-                if len(parts) < 3:
-                    for _ in range(3-len(parts)):
+                    while len(parts) < 3:
                         parts.append('')
 
-                addr_sql = f"select address_code from address where sd_name='{parts[0]}' and ssg_name = '{parts[1]}' and gemd_name = '{parts[2]}'"
-                cursor.execute(addr_sql)
-                upd_row = cursor.fetchone()
-                if upd_row:
-                    if len(row) < 1:
-                        continue
-                    addr_code = upd_row[0]
-                    upd_sql = f"update parking_lot set address_code = {addr_code} where pl_id = '{row[0]}'"
-                    cursor.execute(upd_sql)
-            offset += limit
-        Conn.commit()
-                
-            
-            
-                
+                    try:
+                        cursor.execute(
+                            "SELECT address_code FROM address WHERE sd_name=%s AND ssg_name=%s AND gemd_name=%s",
+                            (parts[0], parts[1], parts[2])
+                        )
+                        upd_row = cursor.fetchone()
+                        if upd_row:
+                            cursor.execute(
+                                "UPDATE parking_lot SET address_code=%s WHERE pl_id=%s",
+                                (upd_row[0], row[0])
+                            )
+                    except Exception as e:
+                        print(f"주소 매핑 오류 (pl_id={row[0]}): {e}")
 
-                
+                offset += limit

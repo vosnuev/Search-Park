@@ -146,7 +146,7 @@ def fetch_reviews_from_naver(driver, pk_code: str, parking_name: str, parking_ad
                 if name_text == parking_name.strip():
                     candidate_links.append(link_el)
                     print(f"  이름 일치: [{name_text}]")
-            except:
+            except Exception:
                 continue
 
         if not candidate_links:
@@ -180,9 +180,9 @@ def fetch_reviews_from_naver(driver, pk_code: str, parking_name: str, parking_ad
                             if addr_text:
                                 naver_addresses.append(addr_text)
                                 print(f"  네이버 주소({label}): {addr_text}")
-                    except:
+                    except Exception:
                         continue
-            except:
+            except Exception:
                 naver_addresses = []
         
             #     pz7wy_els       = driver.find_elements(By.CSS_SELECTOR, "span.pz7wy")
@@ -231,7 +231,7 @@ def fetch_reviews_from_naver(driver, pk_code: str, parking_name: str, parking_ad
             try:
                 wait.until(EC.presence_of_element_located((By.ID, "_review_list")))
                 print(f"  [{parking_name}] 리뷰 목록 로딩 완료")
-            except:
+            except Exception:
                 print(f"  [{parking_name}] 리뷰 목록 로딩 실패 → 스킵")
                 return results
 
@@ -245,7 +245,7 @@ def fetch_reviews_from_naver(driver, pk_code: str, parking_name: str, parking_ad
         while True:
             try:
                 review_list = driver.find_element(By.ID, "_review_list")
-            except:
+            except Exception:
                 break
 
             cards = review_list.find_elements(By.CSS_SELECTOR, "li.EjjAW")
@@ -257,14 +257,14 @@ def fetch_reviews_from_naver(driver, pk_code: str, parking_name: str, parking_ad
                     comment = card.find_element(
                         By.CSS_SELECTOR, "a[data-pui-click-code='rvshowmore']"
                     ).text.strip()
-                except:
+                except Exception:
                     comment = ""
 
                 try:
                     review_date = card.find_element(
                         By.CSS_SELECTOR, "time[aria-hidden='true']"
                     ).text.strip()
-                except:
+                except Exception:
                     review_date = ""
 
                 key = (comment, review_date)
@@ -284,7 +284,7 @@ def fetch_reviews_from_naver(driver, pk_code: str, parking_name: str, parking_ad
                 )
                 driver.execute_script("arguments[0].click();", more_btn)
                 wait.until(EC.presence_of_element_located((By.ID, "_review_list")))
-            except:
+            except Exception:
                 break
 
         print(f"  [{parking_name}] {len(results)}개 리뷰 수집 완료")

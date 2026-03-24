@@ -1,22 +1,24 @@
+import os
 import streamlit as st
 import plotly.express as px
 import pandas as pd
 from sqlalchemy import create_engine, URL
-from db.db import Conn
-from urllib.parse import quote_plus
+from dotenv import load_dotenv
+
+load_dotenv()
+
+_engine = create_engine(URL.create(
+    drivername="mysql+mysqlconnector",
+    username=os.getenv('DB_USER'),
+    password=os.getenv('DB_PASSWORD'),
+    host=os.getenv('DB_HOST', 'localhost'),
+    port=int(os.getenv('DB_PORT', 3306)),
+    database=os.getenv('DB_NAME', 'car_park'),
+))
 
 
 def run_stats():
     st.title("동별 결제수단 통계")
-    url = URL.create(
-        drivername="mysql+mysqlconnector",
-        username=Conn.user,
-        password=Conn._password,  # 특수문자 걱정 없음
-        host=Conn._host,
-        port=Conn._port,
-        database=Conn.database,
-    )
-    engine = create_engine(url)
 
     query = """
     SELECT
@@ -42,7 +44,11 @@ def run_stats():
         pt.pay_name
     """
 
-    df = pd.read_sql(query, engine)
+    try:
+        df = pd.read_sql(query, _engine)
+    except Exception as e:
+        st.error(f"DB 조회 중 오류가 발생했습니다: {e}")
+        return
 
     df = df[df["pay_name"].isin(["카드", "현금"])]
 
@@ -60,7 +66,6 @@ def run_stats():
         st.warning("선택한 지역에 데이터가 없습니다.")
         return
 
-    # 동별 카드/현금 피벗
     pivot_df = filtered_df.pivot_table(
         index="gemd_name",
         columns="pay_name",
@@ -69,19 +74,14 @@ def run_stats():
         fill_value=0
     ).reset_index()
 
-    # 카드/현금 컬럼이 없는 경우 대비
     if "카드" not in pivot_df.columns:
         pivot_df["카드"] = 0
     if "현금" not in pivot_df.columns:
         pivot_df["현금"] = 0
 
-    # 합계 컬럼 추가
     pivot_df["합계"] = pivot_df["카드"] + pivot_df["현금"]
-    pivot_df = pivot_df.rename(columns={
-    "gemd_name": "동/면/읍"
-    })
+    pivot_df = pivot_df.rename(columns={"gemd_name": "동/면/읍"})
 
-    # KPI 계산
     total_card = pivot_df["카드"].sum()
     total_cash = pivot_df["현금"].sum()
 
@@ -89,7 +89,6 @@ def run_stats():
     col1.metric("총 카드", total_card)
     col2.metric("총 현금", total_cash)
 
-    # 긴 형태로 변환
     chart_df = pivot_df.melt(
         id_vars="동/면/읍",
         value_vars=["카드", "현금", "합계"],
@@ -109,16 +108,11 @@ def run_stats():
         color_discrete_map={
             "카드": "#065F46",
             "현금": "#10B981",
-            "합계": "#D1FAE5"    
+            "합계": "#D1FAE5"
         }
     )
 
-    fig.update_traces(
-        textfont=dict(
-        size=12,
-        color="#374151"
-    )
-    )
+    fig.update_traces(textfont=dict(size=12, color="#374151"))
 
     fig.update_layout(
         title=f"{selected_sd} {selected_ssg} 결제수단 현황",
@@ -134,5 +128,4 @@ def run_stats():
     fig.update_yaxes(showgrid=True, gridcolor="rgba(200,200,200,0.3)")
 
     st.plotly_chart(fig, use_container_width=True)
-
     st.dataframe(pivot_df, use_container_width=True)

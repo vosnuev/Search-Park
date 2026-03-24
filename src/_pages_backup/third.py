@@ -12,7 +12,7 @@ import os
 #  경로 설정 (pages/ 안에서 실행될 때 src/ 인식)
 # ─────────────────────────────────────────────
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-from db import Conn   # src/db.py 의 Conn 사용
+from db import get_connection
 
 # ─────────────────────────────────────────────
 #  한글 폰트 설정
@@ -81,7 +81,8 @@ def load_data() -> pd.DataFrame:
         ) pl_agg ON LEFT(cr.address_code, 5) = pl_agg.code_prefix
         ORDER BY cr.sd_name, cr.ssg_name
     """
-    df = pd.read_sql(query, Conn)
+    with get_connection() as conn:
+        df = pd.read_sql(query, conn)
 
     df["차량당주차면수"] = (df["주차면수"] / df["총차량수"].replace(0, np.nan)).round(4)
 

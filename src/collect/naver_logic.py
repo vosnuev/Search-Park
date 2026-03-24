@@ -28,7 +28,7 @@ save_reviews_to_db       = module.save_reviews_to_db
 # ================================================
 DB = dict(
     host=os.getenv('DB_HOST'),
-    port=int(os.getenv('DB_PORT')),
+    port=int(os.getenv('DB_PORT', 3306)),
     user=os.getenv('DB_USER'),
     password=os.getenv('DB_PASSWORD'),
     database=os.getenv('DB_NAME'),
@@ -62,27 +62,31 @@ def run():
     options.add_argument("--disable-dev-shm-usage")
     service = Service(ChromeDriverManager().install())
     driver  = webdriver.Chrome(service=service, options=options)
-    driver.get("https://map.naver.com/p?c=15.00,0,0,0,dh")
-    WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CSS_SELECTOR, "input.input_search"))
-    )
 
-    # 3. 주차장마다 크롤링 → DB 저장
-    total_count = 0
-    for parking in parking_list:
-        print(f"\n검색 중: [{parking['pl_id']}] {parking['pl_name']}")
-
-        reviews = fetch_reviews_from_naver(   # ← models에서 가져온 함수
-            driver,
-            parking['pl_id'],
-            parking['pl_name'],
-            parking['address']
+    try:
+        driver.get("https://map.naver.com/p?c=15.00,0,0,0,dh")
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "input.input_search"))
         )
 
-        save_reviews_to_db(reviews, DB)    # ← models에서 가져온 함수
-        total_count += len(reviews)
-        time.sleep(1)
+        # 3. 주차장마다 크롤링 → DB 저장
+        total_count = 0
+        for parking in parking_list:
+            print(f"\n검색 중: [{parking['pl_id']}] {parking['pl_name']}")
 
-    # 4. 브라우저 종료
-    driver.quit()
-    print(f"\n✅ 전체 완료! 총 {total_count}개 리뷰 수집 및 저장됨")
+            reviews = fetch_reviews_from_naver(
+                driver,
+                parking['pl_id'],
+                parking['pl_name'],
+                parking['address']
+            )
+
+            save_reviews_to_db(reviews, DB)
+            total_count += len(reviews)
+            time.sleep(1)
+
+        print(f"\n✅ 전체 완료! 총 {total_count}개 리뷰 수집 및 저장됨")
+
+    finally:
+        # 4. 브라우저 종료 (예외 발생 시에도 반드시 실행)
+        driver.quit()
